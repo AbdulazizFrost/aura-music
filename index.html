@@ -7,7 +7,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="AURA MUSIC">
-  <link rel="apple-touch-icon" href="assets/covers/avatar.jpg">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="icon" type="image/png" href="assets/icon-192.png">
   <link rel="manifest" href="manifest.json">
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,9 +48,12 @@
           
           <!-- Top Greeting & Profile Header -->
           <div class="app-top-bar">
-            <div class="user-greeting">
-              <span class="greeting-subtitle">Добрый день</span>
-              <h1 class="greeting-username">Abdulaziz</h1>
+            <div class="brand-greeting-wrapper" style="display:flex; align-items:center; gap:12px;">
+              <img src="assets/icon-192.png" alt="AURA MUSIC Logo" class="brand-logo-img" style="width:42px; height:42px; border-radius:12px; box-shadow:0 4px 16px rgba(168, 85, 247, 0.45); border:1px solid rgba(255, 255, 255, 0.15);">
+              <div class="user-greeting">
+                <span class="greeting-subtitle" style="display:flex; align-items:center; gap:4px; font-weight:700; color:var(--accent-purple); letter-spacing:0.5px;">AURA MUSIC</span>
+                <h1 class="greeting-username">Abdulaziz</h1>
+              </div>
             </div>
             <div class="top-bar-actions">
               <div class="profile-avatar-btn" onclick="switchTab('profile')">

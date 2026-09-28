@@ -40,10 +40,10 @@
   /* App Geometry & Notch / Safe Area Clearance */
   --app-max-width: 420px;
   --app-max-height: 900px;
-  --tab-bar-height: 70px;
+  --tab-bar-height: 64px;
   --mini-player-height: 56px;
   --safe-top: max(env(safe-area-inset-top, 0px), 52px);
-  --safe-bottom: max(env(safe-area-inset-bottom, 0px), 24px);
+  --safe-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
 }
 
 /* Base Reset */
@@ -118,57 +118,32 @@ body.is-native .smartphone-device {
   transition: none !important;
 }
 
-@media (max-width: 480px), (max-height: 850px) {
+/* Responsive adaptation for all smartphone screens (iPhone, Android, Foldables, PWA) */
+@media (max-width: 768px), (display-mode: standalone), (hover: none) and (pointer: coarse) {
+  html, body {
+    background-color: var(--bg-app);
+    overflow: hidden;
+  }
+  .mobile-app-body {
+    padding: 0 !important;
+    background: var(--bg-app) !important;
+  }
   .smartphone-device {
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    max-height: 100dvh !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
   }
 }
 
-/* Simulated iPhone Notch / Dynamic Island (Visible in preview, hidden in native app) */
-.phone-dynamic-notch {
-  position: absolute;
-  top: 10px;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: center;
-  z-index: 999;
-  pointer-events: none;
-}
-
+/* Simulated iPhone Notch / Dynamic Island is disabled everywhere so real phones never get a double notch */
+.phone-dynamic-notch,
 .notch-island-pill {
-  width: 116px;
-  height: 28px;
-  background: #000000;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 12px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
-}
-
-.notch-camera {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: radial-gradient(circle, #0F172A 30%, #000 80%);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-}
-
-.notch-sensor {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #080A12;
-}
-
-body.is-native .phone-dynamic-notch {
   display: none !important;
 }
 
@@ -214,7 +189,7 @@ body.is-native .phone-dynamic-notch {
 }
 
 .scroll-bottom-spacer {
-  height: calc(var(--mini-player-height) + var(--tab-bar-height) + 16px);
+  height: calc(var(--mini-player-height) + var(--tab-bar-height) + env(safe-area-inset-bottom, 0px) + 24px);
 }
 
 /* Shared Native Headers */
@@ -1071,7 +1046,7 @@ input:checked + .switch-slider:before {
    ========================================================================== */
 .native-mini-player {
   position: absolute;
-  bottom: calc(var(--tab-bar-height) + 10px);
+  bottom: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px) + 8px);
   left: 12px;
   right: 12px;
   height: var(--mini-player-height);
@@ -1188,15 +1163,16 @@ input:checked + .switch-slider:before {
   bottom: 0;
   left: 0;
   right: 0;
-  height: var(--tab-bar-height);
+  height: calc(var(--tab-bar-height) + env(safe-area-inset-bottom, 0px));
   background: var(--bg-glass-bar);
   backdrop-filter: blur(30px);
   -webkit-backdrop-filter: blur(30px);
   border-top: 1px solid var(--border-subtle);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-around;
-  padding-bottom: 12px;
+  padding-top: 6px;
+  padding-bottom: max(6px, env(safe-area-inset-bottom, 0px));
   z-index: 85;
 }
 

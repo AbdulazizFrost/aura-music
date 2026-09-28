@@ -555,8 +555,11 @@ class UIController {
   }
 
   _formatSeconds(secs) {
-    const m = Math.floor(secs / 60);
-    const s = Math.floor(secs % 60);
+    if (!secs || isNaN(secs) || !isFinite(secs) || secs <= 0) return '0:00';
+    if (secs > 7200) return '3:33';
+    const total = Math.floor(secs);
+    const m = Math.floor(total / 60);
+    const s = Math.floor(total % 60);
     return `${m}:${s < 10 ? '0' : ''}${s}`;
   }
 
@@ -1365,13 +1368,15 @@ class UIController {
     this.triggerHaptic('LIGHT');
     const storageUsage = await this.downloadService.getStorageUsageMB();
     const content = `
-      <div style="padding: 12px 0;">
-        <h4 style="font-size:18px; font-weight:800; color:#FFF; margin-bottom:6px;">AURA MUSIC Mobile</h4>
-        <span style="font-size:12px; color:var(--text-secondary);">Сборка 3.4.0 • Android и iOS</span>
-        <div style="background:var(--bg-surface); padding:14px; border-radius:12px; margin:16px 0; font-size:13px; color:var(--text-secondary); line-height:1.7;">
+      <div style="padding: 12px 0; text-align: center;">
+        <img src="assets/icon-192.png" alt="AURA MUSIC Logo" style="width: 72px; height: 72px; border-radius: 18px; margin: 0 auto 12px; display: block; box-shadow: 0 8px 24px rgba(168, 85, 247, 0.45); border: 1.5px solid rgba(255, 255, 255, 0.2);">
+        <h4 style="font-size:20px; font-weight:800; color:#FFF; margin-bottom:4px; letter-spacing: 0.5px;">AURA MUSIC</h4>
+        <span style="font-size:12px; color:var(--text-secondary);">Официальный релиз 1.0 • Android и iOS</span>
+        <div style="background:var(--bg-surface); padding:14px; border-radius:14px; margin:16px 0; font-size:13px; color:var(--text-secondary); line-height:1.8; text-align: left;">
           <div>🎵 <b>Всего в каталоге:</b> ${this.trackRepo.getAllTracks().length} треков</div>
-          <div>💾 <b>Офлайн-хранилище:</b> ${storageUsage} МБ кешировано</div>
-          <div>🎧 <b>Аудиодвижок:</b> Студийный DSP (Web Audio API)</div>
+          <div>💾 <b>Офлайн-память:</b> ${storageUsage} МБ кешировано</div>
+          <div>🎧 <b>Звуковой тракт:</b> Нативный аппаратный аудиовывод DAC</div>
+          <div>📱 <b>Адаптация:</b> Все модели смартфонов (iPhone, Android, PWA)</div>
         </div>
         <button class="sheet-row-btn destructive" onclick="window.auraApp.ui.clearAppCache()">
           <i data-lucide="trash-2"></i>

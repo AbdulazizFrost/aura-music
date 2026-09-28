@@ -98,9 +98,14 @@ class AudioService {
   _onLoadedMetadata() {
     if (!this.audioElement) return;
     if (this.audioElement.duration && !isNaN(this.audioElement.duration) && isFinite(this.audioElement.duration)) {
-      this.duration = Math.floor(this.audioElement.duration);
-      if (this.currentTrack) {
-        this.currentTrack.duration = this.duration;
+      const detected = Math.floor(this.audioElement.duration);
+      if (detected > 2 && detected < 3600) {
+        this.duration = detected;
+        if (this.currentTrack) {
+          if (!this.currentTrack.duration || Math.abs(detected - this.currentTrack.duration) < 30) {
+            this.currentTrack.duration = detected;
+          }
+        }
       }
     }
     this.isLoading = false;
