@@ -1,0 +1,26 @@
+# Dependencies and build outputs
+node_modules/
+dist/
+
+# OS and IDE files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Temporary debug artifacts
+debug_frame_*.png
+phone_cropped.png
+analyze_chrome_dom.js
+chrome_dom.html
+
+# Android local configs and build caches
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/.kotlin/

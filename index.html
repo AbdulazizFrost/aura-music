@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AURA MUSIC</title>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Local Offline Lucide Icons -->
+  <script src="assets/lucide.min.js"></script>
+  <!-- Native Mobile App Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="mobile-app-body">
+
+  <!-- Real Native HTML5 Audio Element for Background / Native Playback -->
+  <audio id="nativeAudioElement" preload="auto" playsinline webkit-playsinline></audio>
+
+  <!-- ============================================== -->
+  <!-- REAL NATIVE SMARTPHONE APPLICATION CONTAINER   -->
+  <!-- ============================================== -->
+  <div class="smartphone-device" id="smartphoneRoot">
+    
+    <!-- Authentic iPhone Notch / Dynamic Island for Browser Preview (Auto-hidden on native phones) -->
+    <div class="phone-dynamic-notch" aria-hidden="true">
+      <div class="notch-island-pill">
+        <div class="notch-camera"></div>
+        <div class="notch-sensor"></div>
+      </div>
+    </div>
+
+    <!-- Main Mobile Application Viewport -->
+    <main class="app-viewport">
+
+      <!-- ============================================== -->
+      <!-- SCREEN 1: HOME                                  -->
+      <!-- ============================================== -->
+      <section class="app-screen active" id="screenHome">
+        <div class="screen-scroll-container">
+          
+          <!-- Top Greeting & Profile Header -->
+          <div class="app-top-bar">
+            <div class="user-greeting">
+              <span class="greeting-subtitle">Добрый день</span>
+              <h1 class="greeting-username">Abdulaziz</h1>
+            </div>
+            <div class="top-bar-actions">
+              <div class="profile-avatar-btn" onclick="switchTab('profile')">
+                <img src="assets/covers/avatar.jpg" alt="Аватар" class="avatar-photo">
+                <span class="avatar-status-ring"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Search Bar -->
+          <div class="native-search-bar" onclick="switchTab('search')">
+            <i data-lucide="search" class="search-lens"></i>
+            <span class="search-prompt">Поиск музыки, треков, артистов...</span>
+            <button class="search-tune-btn" aria-label="Фильтры" onclick="event.stopPropagation(); switchTab('search')">
+              <i data-lucide="sliders-horizontal"></i>
+            </button>
+          </div>
+
+          <!-- Featured Playlists Section -->
+          <div class="native-section">
+            <div class="section-title-row">
+              <h2 class="section-heading">Популярные плейлисты</h2>
+              <button class="section-link-btn" onclick="switchTab('library')">Все</button>
+            </div>
+            <div class="featured-horizontal-carousel">
+              <!-- Chill Vibes -->
+              <div class="featured-card card-chill" onclick="window.auraApp.ui.playPlaylist('pl-chill')">
+                <div class="featured-card-overlay"></div>
+                <div class="featured-card-info">
+                  <h3 class="fcard-title">Чилл и релакс</h3>
+                  <span class="fcard-count" id="fcardChillCount">3 трека</span>
+                </div>
+                <button class="fcard-play-button" aria-label="Слушать Чилл и релакс">
+                  <i data-lucide="play"></i>
+                </button>
+              </div>
+
+              <!-- Workout -->
+              <div class="featured-card card-workout" onclick="window.auraApp.ui.playPlaylist('pl-workout')">
+                <div class="featured-card-overlay"></div>
+                <div class="featured-card-info">
+                  <h3 class="fcard-title">Энергия и спорт</h3>
+                  <span class="fcard-count" id="fcardWorkoutCount">3 трека</span>
+                </div>
+                <button class="fcard-play-button" aria-label="Слушать Энергия и спорт">
+                  <i data-lucide="play"></i>
+                </button>
+              </div>
+
+              <!-- Night Drive -->
+              <div class="featured-card card-night" onclick="window.auraApp.ui.playPlaylist('pl-night')">
+                <div class="featured-card-overlay"></div>
+                <div class="featured-card-info">
+                  <h3 class="fcard-title">Ночная дорога</h3>
+                  <span class="fcard-count" id="fcardNightCount">3 трека</span>
+                </div>
+                <button class="fcard-play-button" aria-label="Слушать Ночная дорога">
+                  <i data-lucide="play"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recently Played Section -->
+          <div class="native-section">
+            <div class="section-title-row">
+              <h2 class="section-heading">Недавно прослушано</h2>
+              <button class="section-link-btn" onclick="switchTab('library')">Все</button>
+            </div>
+            
+            <div class="song-list-view" id="homeRecentSongsContainer">
+              <!-- Dynamically populated from state / storage -->
+            </div>
+          </div>
+
+          <!-- Bottom Padding for Floating Mini Player -->
+          <div class="scroll-bottom-spacer"></div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 2: SEARCH                                -->
+      <!-- ============================================== -->
+      <section class="app-screen" id="screenSearch">
+        <div class="screen-scroll-container">
+          <h1 class="native-screen-title">Поиск</h1>
+
+          <!-- Real Search Input with Mic -->
+          <div class="search-active-field">
+            <i data-lucide="search" class="search-field-icon"></i>
+            <input type="text" id="liveSearchInput" placeholder="Артисты, треки, текст или плейлисты" oninput="onSearchType(this.value)">
+            <button class="search-clear-btn" id="btnSearchClear" onclick="clearSearch()" style="display:none;" aria-label="Очистить">
+              <i data-lucide="x"></i>
+            </button>
+            <button class="mic-voice-btn" onclick="startVoiceSearch()" aria-label="Голосовой поиск">
+              <i data-lucide="mic"></i>
+            </button>
+          </div>
+
+          <!-- Browse by Genre -->
+          <div class="native-section" id="sectionBrowseGenre">
+            <h2 class="section-heading">Жанры коллекции</h2>
+            <div class="genre-grid-cards">
+              <!-- Pop -->
+              <div class="native-genre-card g-pop" onclick="selectGenre('Поп')">
+                <div class="genre-text-group">
+                  <span class="g-name">Поп</span>
+                  <span class="g-playlists">11 треков</span>
+                </div>
+                <div class="g-icon-shadow">
+                  <i data-lucide="music-2"></i>
+                </div>
+              </div>
+
+              <!-- Electronic -->
+              <div class="native-genre-card g-electronic" onclick="selectGenre('Электроника')">
+                <div class="genre-text-group">
+                  <span class="g-name">Электроника</span>
+                  <span class="g-playlists">4 трека</span>
+                </div>
+                <div class="g-icon-shadow">
+                  <i data-lucide="radio"></i>
+                </div>
+              </div>
+
+              <!-- Rock -->
+              <div class="native-genre-card g-rock" onclick="selectGenre('Рок')">
+                <div class="genre-text-group">
+                  <span class="g-name">Рок</span>
+                  <span class="g-playlists">3 трека</span>
+                </div>
+                <div class="g-icon-shadow">
+                  <i data-lucide="zap"></i>
+                </div>
+              </div>
+
+              <!-- R&B -->
+              <div class="native-genre-card g-rnb" onclick="selectGenre('R&B')">
+                <div class="genre-text-group">
+                  <span class="g-name">R&B</span>
+                  <span class="g-playlists">1 трек</span>
+                </div>
+                <div class="g-icon-shadow">
+                  <i data-lucide="heart-handshake"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trending Now / Results -->
+          <div class="native-section">
+            <div class="section-title-row">
+              <h2 class="section-heading" id="searchListHeader">Сейчас в тренде</h2>
+              <button class="section-link-btn" onclick="clearSearch()">Сброс</button>
+            </div>
+            <div class="song-list-view" id="searchResultsContainer">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <div class="scroll-bottom-spacer"></div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 3: LIBRARY                               -->
+      <!-- ============================================== -->
+      <section class="app-screen" id="screenLibrary">
+        <div class="screen-scroll-container">
+          
+          <!-- Library Header with Quick Add -->
+          <div class="app-top-bar">
+            <h1 class="native-screen-title" style="margin-bottom:0;">Медиатека</h1>
+            <button class="icon-circle-btn add-btn" onclick="window.auraApp.ui.openLibraryAddMenu()" aria-label="Добавить">
+              <i data-lucide="plus"></i>
+            </button>
+          </div>
+
+          <!-- Quick Import Music Button -->
+          <button class="import-music-banner-btn" onclick="window.auraApp.ui.triggerImportAudio()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:12px 16px; margin-bottom:14px; border-radius:16px; background:linear-gradient(135deg, rgba(168,85,247,0.18) 0%, rgba(236,72,153,0.18) 100%); border:1px dashed rgba(168,85,247,0.5); color:#FFF; font-weight:700; font-size:13px; cursor:pointer;">
+            <i data-lucide="folder-plus" style="width:18px; height:18px; color:#D946EF;"></i>
+            <span>Загрузить свою музыку (MP3 / WAV)</span>
+          </button>
+
+          <!-- Category Pill Tabs -->
+          <div class="segmented-pill-tabs">
+            <button class="seg-pill active" onclick="switchLibraryCategory(this, 'playlists')">Плейлисты</button>
+            <button class="seg-pill" onclick="switchLibraryCategory(this, 'songs')">Треки</button>
+            <button class="seg-pill" onclick="switchLibraryCategory(this, 'albums')">Альбомы</button>
+            <button class="seg-pill" onclick="switchLibraryCategory(this, 'artists')">Артисты</button>
+          </div>
+
+          <!-- Liked Songs Special Banner Card -->
+          <div class="liked-songs-banner" onclick="playLikedSongs()">
+            <div class="liked-heart-badge">
+              <i data-lucide="heart"></i>
+            </div>
+            <div class="liked-banner-meta">
+              <h3 class="liked-banner-title">Любимые треки</h3>
+              <span class="liked-banner-count" id="likedCounterText">0 треков</span>
+            </div>
+            <button class="more-options-btn" onclick="event.stopPropagation(); actionLikedSongsOptions();" aria-label="Опции">
+              <i data-lucide="more-vertical"></i>
+            </button>
+          </div>
+
+          <!-- Custom Playlists List -->
+          <div class="library-items-list" id="libraryListContainer">
+            <!-- Playlist Items will be rendered here -->
+          </div>
+
+          <div class="scroll-bottom-spacer"></div>
+        </div>
+      </section>
+
+      <!-- ============================================== -->
+      <!-- SCREEN 4: PROFILE & SETTINGS                    -->
+      <!-- ============================================== -->
+      <section class="app-screen" id="screenProfile">
+        <div class="screen-scroll-container">
+          <h1 class="native-screen-title">Профиль и настройки</h1>
+
+          <!-- User Profile Card -->
+          <div class="profile-card">
+            <div class="profile-card-avatar">
+              <img src="assets/covers/avatar.jpg" alt="Abdulaziz">
+              <span class="avatar-ring-glow"></span>
+            </div>
+            <div class="profile-card-info">
+              <h2 class="profile-user-name">Abdulaziz</h2>
+              <span class="profile-badge-pro">
+                <i data-lucide="sparkles"></i> AURA Hi-Fi Lossless
+              </span>
+              <p class="profile-membership">Индивидуальный план • Активен</p>
+            </div>
+          </div>
+
+          <!-- Settings Groups -->
+          <div class="settings-group">
+            <span class="settings-group-label">ПАРАМЕТРЫ</span>
+            
+            <div class="settings-row">
+              <div class="settings-row-left">
+                <i data-lucide="moon" class="row-icon"></i>
+                <div class="row-text">
+                  <span class="row-title">Темный режим OLED</span>
+                  <span class="row-sub">Максимальный контраст и экономия батареи</span>
+                </div>
+              </div>
+              <label class="native-switch">
+                <input type="checkbox" id="oledModeCheckbox" checked onchange="toggleOledMode(this.checked)">
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+
+            <div class="settings-row" onclick="cycleAudioQuality()">
+              <div class="settings-row-left">
+                <i data-lucide="waveform" class="row-icon"></i>
+                <div class="row-text">
+                  <span class="row-title">Качество аудиопотока</span>
+                  <span class="row-sub" id="audioQualityVal">Hi-Res Lossless (24-бит/192 кГц)</span>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="row-arrow"></i>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-row-left">
+                <i data-lucide="download" class="row-icon"></i>
+                <div class="row-text">
+                  <span class="row-title">Умная автозагрузка</span>
+                  <span class="row-sub">Автосохранение любимых треков</span>
+                </div>
+              </div>
+              <label class="native-switch">
+                <input type="checkbox" id="smartDownloadCheckbox" checked onchange="toggleSmartDownloads(this.checked)">
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <span class="settings-group-label">ВОСПРОИЗВЕДЕНИЕ</span>
+            
+            <div class="settings-row" onclick="cycleEqualizerPreset()">
+              <div class="settings-row-left">
+                <i data-lucide="sliders" class="row-icon"></i>
+                <div class="row-text">
+                  <span class="row-title">Студийный эквалайзер</span>
+                  <span class="row-sub" id="eqPresetVal">Усиление баса + Пространственный звук</span>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="row-arrow"></i>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-row-left">
+                <i data-lucide="shuffle" class="row-icon"></i>
+                <div class="row-text">
+                  <span class="row-title">Плавный переход (Crossfade)</span>
+                  <span class="row-sub">Переход 5 секунд</span>
+                </div>
+              </div>
+              <label class="native-switch">
+                <input type="checkbox" id="crossfadeCheckbox" checked onchange="toggleCrossfade(this.checked)">
+                <span class="switch-slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="settings-group">
+            <span class="settings-group-label">О ПРИЛОЖЕНИИ</span>
+            
+            <div class="settings-row" onclick="showAppInfo()">
+              <div class="settings-row-left">
+                <i data-lucide="info" class="row-icon"></i>
+                <div class="row-text">
+                  <span class="row-title">О приложении AURA MUSIC</span>
+                  <span class="row-sub">Версия 3.4.0 (Сборка 2026.9)</span>
+                </div>
+              </div>
+              <i data-lucide="chevron-right" class="row-arrow"></i>
+            </div>
+          </div>
+
+          <div class="scroll-bottom-spacer"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ============================================== -->
+    <!-- PERSISTENT MINI-PLAYER (Floating above Tabs)   -->
+    <!-- ============================================== -->
+    <div class="native-mini-player" id="nativeMiniPlayer" onclick="openNowPlayingScreen()">
+      <div class="mini-progress-bar">
+        <div class="mini-progress-track" id="miniProgressTrack" style="width: 35%;"></div>
+      </div>
+      <div class="mini-player-inner">
+        <div class="mini-art-thumb">
+          <img src="assets/covers/starboy.jpg" alt="Обложка" id="miniArtImg">
+        </div>
+        <div class="mini-titles-box">
+          <span class="mini-song-title" id="miniSongTitle">Starboy</span>
+          <span class="mini-artist-sub" id="miniArtistSub">The Weeknd</span>
+        </div>
+        <div class="mini-action-buttons" onclick="event.stopPropagation()">
+          <button class="mini-btn" id="miniPlayBtn" onclick="togglePlayState()" aria-label="Воспроизведение/Пауза">
+            <i data-lucide="play" class="icon-play-state"></i>
+            <i data-lucide="pause" class="icon-pause-state" style="display:none;"></i>
+          </button>
+          <button class="mini-btn" onclick="skipToNextTrack()" aria-label="Следующий трек">
+            <i data-lucide="skip-forward"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- NATIVE BOTTOM TAB NAVIGATION                   -->
+    <!-- ============================================== -->
+    <nav class="native-tab-bar">
+      <button class="tab-item active" id="tabHome" onclick="switchTab('home')">
+        <div class="tab-icon-wrap">
+          <i data-lucide="home"></i>
+          <span class="tab-indicator-dot"></span>
+        </div>
+        <span class="tab-label">Главная</span>
+      </button>
+
+      <button class="tab-item" id="tabSearch" onclick="switchTab('search')">
+        <div class="tab-icon-wrap">
+          <i data-lucide="search"></i>
+          <span class="tab-indicator-dot"></span>
+        </div>
+        <span class="tab-label">Поиск</span>
+      </button>
+
+      <button class="tab-item" id="tabLibrary" onclick="switchTab('library')">
+        <div class="tab-icon-wrap">
+          <i data-lucide="library"></i>
+          <span class="tab-indicator-dot"></span>
+        </div>
+        <span class="tab-label">Медиатека</span>
+      </button>
+
+      <button class="tab-item" id="tabProfile" onclick="switchTab('profile')">
+        <div class="tab-icon-wrap">
+          <i data-lucide="user"></i>
+          <span class="tab-indicator-dot"></span>
+        </div>
+        <span class="tab-label">Профиль</span>
+      </button>
+    </nav>
+
+
+    <!-- ============================================== -->
+    <!-- SCREEN 5: NOW PLAYING FULL-SCREEN MODAL SHEET   -->
+    <!-- ============================================== -->
+    <section class="now-playing-modal" id="nowPlayingModal">
+      <!-- Background Ambient Artwork Blur -->
+      <div class="np-ambient-glow" id="npAmbientGlow"></div>
+
+      <!-- Apple-style Top Pull/Drag Handle -->
+      <div class="np-drag-pill-wrap" onclick="closeNowPlayingScreen();" title="Потяните вниз, чтобы закрыть">
+        <div class="np-drag-pill"></div>
+      </div>
+
+      <!-- Drag Handle & Collapse Bar (Supports Swipe-Down Gesture) -->
+      <div class="np-top-bar" id="npSwipeHandleBar">
+        <button class="np-icon-btn np-close-btn" id="npCloseBtn" onclick="closeNowPlayingScreen();" aria-label="Закрыть" title="Закрыть (Esc)">
+          <i data-lucide="chevron-down"></i>
+        </button>
+        <div class="np-heading-group" onclick="closeNowPlayingScreen();" title="Нажмите, чтобы закрыть" style="cursor:pointer;">
+          <span class="np-top-sub">ИЗ ПЛЕЙЛИСТА</span>
+          <span class="np-top-title" id="npPlaylistTitle">After Hours</span>
+        </div>
+        <button class="np-icon-btn" onclick="event.stopPropagation(); window.auraApp.ui.openTrackOptions(event, null);" aria-label="Опции">
+          <i data-lucide="more-horizontal"></i>
+        </button>
+      </div>
+
+      <!-- Now Playing Scroll Content -->
+      <div class="np-scroll-body">
+        
+        <!-- Large Album Artwork Card -->
+        <div class="np-artwork-container">
+          <div class="np-artwork-glow"></div>
+          <div class="np-artwork-frame">
+            <img src="assets/covers/starboy.jpg" alt="Обложка" id="npArtworkImg" class="np-cover-photo">
+            <div class="np-album-badge">
+              <span class="album-badge-tag">LOSSLESS HI-RES</span>
+              <span class="album-badge-name" id="npBadgeName">STARBOY</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Track Title, Artist & Favorite -->
+        <div class="np-info-section">
+          <div class="np-titles-column">
+            <h2 class="np-song-name" id="npSongName">Starboy</h2>
+            <p class="np-artist-name" id="npArtistName">The Weeknd</p>
+          </div>
+          <button class="np-heart-btn active" id="npFavoriteBtn" onclick="toggleFavorite()" aria-label="В избранное">
+            <i data-lucide="heart"></i>
+          </button>
+        </div>
+
+        <!-- Interactive Progress Scrubber -->
+        <div class="np-scrubber-wrapper">
+          <div class="scrubber-track-line" id="scrubberTrackLine" onclick="seekTrackPosition(event)">
+            <div class="scrubber-progress-fill" id="scrubberFill" style="width: 35%;"></div>
+            <div class="scrubber-handle-thumb" id="scrubberHandle" style="left: 35%;"></div>
+          </div>
+          <div class="scrubber-time-row">
+            <span class="time-stamp" id="timeElapsed">1:07</span>
+            <span class="time-stamp" id="timeRemaining">-2:13</span>
+          </div>
+        </div>
+
+        <!-- Master Playback Controls -->
+        <div class="np-controls-master">
+          <button class="np-ctrl-action" id="btnShuffle" onclick="toggleShuffle()" aria-label="Случайный порядок">
+            <i data-lucide="shuffle"></i>
+          </button>
+          <button class="np-ctrl-action" onclick="skipToPreviousTrack()" aria-label="Предыдущий трек">
+            <i data-lucide="skip-back"></i>
+          </button>
+          <button class="np-master-play-circle" id="npMasterPlayBtn" onclick="togglePlayState()" aria-label="Воспроизведение/Пауза">
+            <div class="master-halo-glow"></div>
+            <i data-lucide="play" class="master-play-icon"></i>
+            <i data-lucide="pause" class="master-pause-icon" style="display:none;"></i>
+          </button>
+          <button class="np-ctrl-action" onclick="skipToNextTrack()" aria-label="Следующий трек">
+            <i data-lucide="skip-forward"></i>
+          </button>
+          <button class="np-ctrl-action active" id="btnRepeat" onclick="toggleRepeat()" aria-label="Повтор">
+            <i data-lucide="repeat"></i>
+          </button>
+        </div>
+
+        <!-- Secondary Hardware Audio Routing & Queue -->
+        <div class="np-sub-actions">
+          <button class="sub-action-btn" onclick="showAirPlayNotice()">
+            <i data-lucide="laptop-2"></i>
+            <span>Трансляция и Bluetooth</span>
+          </button>
+          <button class="sub-action-btn" onclick="showQueueNotice()">
+            <i data-lucide="list-music"></i>
+            <span>Очередь треков</span>
+          </button>
+        </div>
+
+        <!-- Synchronized Lyrics Drawer Card -->
+        <div class="lyrics-drawer-card">
+          <div class="lyrics-card-header">
+            <span class="lyrics-card-title">Текст песни</span>
+            <span class="lyrics-card-badge">Синхронизировано</span>
+          </div>
+          <div class="lyrics-stream-lines" id="lyricsStreamLines">
+            <!-- Lyrics lines rendered dynamically -->
+          </div>
+        </div>
+
+        <div style="height: 40px;"></div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- NATIVE BOTTOM SHEET (Track Options Menu)       -->
+    <!-- ============================================== -->
+    <div class="sheet-backdrop" id="trackOptionsBackdrop" onclick="closeTrackOptions()">
+      <div class="native-bottom-sheet" onclick="event.stopPropagation()">
+        <div class="sheet-drag-pill"></div>
+        <div class="sheet-track-preview">
+          <img src="assets/covers/starboy.jpg" alt="" id="sheetTrackImg" class="sheet-thumb">
+          <div class="sheet-track-meta">
+            <h4 class="sheet-title" id="sheetTrackTitle">Название трека</h4>
+            <span class="sheet-sub" id="sheetTrackArtist">Исполнитель</span>
+          </div>
+        </div>
+        <div class="sheet-options-list">
+          <button class="sheet-row-btn" onclick="actionPlayNext()">
+            <i data-lucide="play-circle"></i>
+            <span>Играть следующим</span>
+          </button>
+          <button class="sheet-row-btn" onclick="actionAddToQueue()">
+            <i data-lucide="list-plus"></i>
+            <span>Добавить в очередь</span>
+          </button>
+          <button class="sheet-row-btn" onclick="actionAddToPlaylist()">
+            <i data-lucide="plus-circle"></i>
+            <span>Добавить в плейлист</span>
+          </button>
+          <button class="sheet-row-btn" id="sheetBtnDownload" onclick="actionDownloadTrack()">
+            <i data-lucide="download" id="sheetDownloadIcon"></i>
+            <span id="sheetDownloadText">Скачать аудиофайл</span>
+          </button>
+          <button class="sheet-row-btn" onclick="actionViewArtist()">
+            <i data-lucide="user"></i>
+            <span>Страница артиста</span>
+          </button>
+          <button class="sheet-row-btn" onclick="actionShareTrack()">
+            <i data-lucide="share-2"></i>
+            <span>Поделиться треком</span>
+          </button>
+          <button class="sheet-row-btn destructive" onclick="closeTrackOptions()">
+            <i data-lucide="x-circle"></i>
+            <span>Закрыть</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- NATIVE MODAL DIALOG (Create New Playlist)      -->
+    <!-- ============================================== -->
+    <div class="dialog-backdrop" id="createPlaylistDialog" onclick="closeCreatePlaylistDialog()">
+      <div class="native-modal-dialog" onclick="event.stopPropagation()">
+        <h3 class="dialog-title">Новый плейлист</h3>
+        <p class="dialog-description">Введите название плейлиста, чтобы начать добавлять ваши любимые треки.</p>
+        <input type="text" id="newPlaylistInput" placeholder="Название плейлиста" class="dialog-input">
+        <div class="dialog-button-row">
+          <button class="dialog-btn cancel" onclick="closeCreatePlaylistDialog()">Отмена</button>
+          <button class="dialog-btn confirm" onclick="submitCreatePlaylist()">Создать</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Native Mobile App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
